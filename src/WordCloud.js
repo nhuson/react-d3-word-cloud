@@ -68,7 +68,9 @@ class WordCloud extends Component {
     select(this.wordCloud)
       .selectAll("*")
       .remove();
-    const fillColor = defaultColor ? (d, i) => defaultColor : d.color;
+    const fillColor = (d, i) => (d.color ? d.color : defaultColor);
+    const fontWeight = (d, i) => (d.fontWeight ? d.fontWeight : "normal");
+
     // render based on new data
     const layout = cloud()
       .size([width, height])
@@ -94,6 +96,7 @@ class WordCloud extends Component {
           .style("font-size", d => `${d.size}px`)
           .style("font-family", font)
           .style("fill", fillColor)
+          .style("font-weight", fontWeight)
           .attr("text-anchor", "middle")
           .attr("transform", d => `translate(${[d.x, d.y]})rotate(${d.rotate})`)
           .text(d => d.text);
