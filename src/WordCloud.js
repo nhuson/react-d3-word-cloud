@@ -68,7 +68,7 @@ class WordCloud extends Component {
     select(this.wordCloud)
       .selectAll("*")
       .remove();
-    const fillColor = defaultColor ? (d, i) => fill(defaultColor) : fill(d.color)
+    const fillColor = defaultColor ? (d, i) => defaultColor : d.color;
     // render based on new data
     const layout = cloud()
       .size([width, height])
