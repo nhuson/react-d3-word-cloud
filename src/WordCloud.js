@@ -1,12 +1,12 @@
-import PropTypes from 'prop-types';
-import ReactFauxDom from 'react-faux-dom';
-import cloud from 'd3-cloud';
-import { Component } from 'react';
-import { scaleOrdinal } from 'd3-scale';
-import { schemeCategory10 } from 'd3-scale-chromatic';
-import { select } from 'd3-selection';
+import PropTypes from "prop-types";
+import ReactFauxDom from "react-faux-dom";
+import cloud from "d3-cloud";
+import { Component } from "react";
+import { scaleOrdinal } from "d3-scale";
+import { schemeCategory10 } from "d3-scale-chromatic";
+import { select } from "d3-selection";
 
-import { defaultFontSizeMapper } from './defaultMappers';
+import { defaultFontSizeMapper } from "./defaultMappers";
 
 const fill = scaleOrdinal(schemeCategory10);
 
@@ -15,7 +15,7 @@ class WordCloud extends Component {
     data: PropTypes.arrayOf(
       PropTypes.shape({
         text: PropTypes.string.isRequired,
-        value: PropTypes.number.isRequired,
+        value: PropTypes.number.isRequired
       })
     ).isRequired,
     font: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
@@ -27,22 +27,26 @@ class WordCloud extends Component {
     onWordClick: PropTypes.func,
     onWordMouseOut: PropTypes.func,
     onWordMouseOver: PropTypes.func,
+    color: PropTypes.string,
+    colors: PropTypes.arrayOf(PropTypes.string)
   };
 
   static defaultProps = {
     width: 700,
     height: 600,
     padding: 5,
-    font: 'serif',
+    font: "serif",
     fontSizeMapper: defaultFontSizeMapper,
     rotate: 0,
     onWordClick: null,
     onWordMouseOver: null,
     onWordMouseOut: null,
+    color: undefined,
+    colors: []
   };
 
   componentWillMount() {
-    this.wordCloud = ReactFauxDom.createElement('div');
+    this.wordCloud = ReactFauxDom.createElement("div");
   }
 
   render() {
@@ -57,13 +61,18 @@ class WordCloud extends Component {
       onWordClick,
       onWordMouseOver,
       onWordMouseOut,
+      colors,
+      color
     } = this.props;
 
     // clear old words
     select(this.wordCloud)
-      .selectAll('*')
+      .selectAll("*")
       .remove();
-
+    const fillColor =
+      colors.length === 0 && !color
+        ? (d, i) => fill(i)
+        : (d, i) => (i < colors.length ? colors[i] : color);
     // render based on new data
     const layout = cloud()
       .size([width, height])
@@ -72,35 +81,35 @@ class WordCloud extends Component {
       .padding(padding)
       .rotate(rotate)
       .fontSize(fontSizeMapper)
-      .on('end', words => {
+      .on("end", words => {
         const texts = select(this.wordCloud)
-          .append('svg')
-          .attr('width', layout.size()[0])
-          .attr('height', layout.size()[1])
-          .append('g')
+          .append("svg")
+          .attr("width", layout.size()[0])
+          .attr("height", layout.size()[1])
+          .append("g")
           .attr(
-            'transform',
+            "transform",
             `translate(${layout.size()[0] / 2},${layout.size()[1] / 2})`
           )
-          .selectAll('text')
+          .selectAll("text")
           .data(words)
           .enter()
-          .append('text')
-          .style('font-size', d => `${d.size}px`)
-          .style('font-family', font)
-          .style('fill', (d, i) => fill(i))
-          .attr('text-anchor', 'middle')
-          .attr('transform', d => `translate(${[d.x, d.y]})rotate(${d.rotate})`)
+          .append("text")
+          .style("font-size", d => `${d.size}px`)
+          .style("font-family", font)
+          .style("fill", (d, i) => fill(fillColor))
+          .attr("text-anchor", "middle")
+          .attr("transform", d => `translate(${[d.x, d.y]})rotate(${d.rotate})`)
           .text(d => d.text);
 
         if (onWordClick) {
-          texts.on('click', onWordClick);
+          texts.on("click", onWordClick);
         }
         if (onWordMouseOver) {
-          texts.on('mouseover', onWordMouseOver);
+          texts.on("mouseover", onWordMouseOver);
         }
         if (onWordMouseOut) {
-          texts.on('mouseout', onWordMouseOut);
+          texts.on("mouseout", onWordMouseOut);
         }
       });
 

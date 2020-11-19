@@ -1,7 +1,6 @@
 {
-  "name": "react-d3-cloud",
+  "name": "@nhuson/react-d3-cloud",
   "description": "a word cloud component using d3-cloud",
-  "license": "MIT",
   "version": "0.7.0",
   "main": "lib/index.js",
   "scripts": {
@@ -11,11 +10,7 @@
     "lint": "eslint .",
     "lint:fix": "npm run lint -- --fix",
     "lint:staged": "lint-staged",
-    "prepublishOnly": "npm run build",
-    "test": "npm run lint && npm run testonly",
-    "testonly": "jest --no-cache",
-    "testonly:watch": "npm run testonly -- --watch",
-    "preversion": "npm test"
+    "prepublishOnly": "npm run build"
   },
   "dependencies": {
     "d3-cloud": "^1.2.5",
