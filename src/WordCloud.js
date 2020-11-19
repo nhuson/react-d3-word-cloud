@@ -61,18 +61,14 @@ class WordCloud extends Component {
       onWordClick,
       onWordMouseOver,
       onWordMouseOut,
-      colors,
-      color
+      defaultColor
     } = this.props;
 
     // clear old words
     select(this.wordCloud)
       .selectAll("*")
       .remove();
-    const fillColor =
-      colors.length === 0 && !color
-        ? (d, i) => fill(i)
-        : (d, i) => (i < colors.length ? colors[i] : color);
+    const fillColor = defaultColor ? (d, i) => fill(defaultColor) : fill(d.color)
     // render based on new data
     const layout = cloud()
       .size([width, height])
