@@ -2,6 +2,7 @@ import PropTypes from "prop-types";
 import cloud from "d3-cloud";
 import React, { useEffect } from "react";
 import { select } from "d3-selection";
+import { v4 as uuidv4 } from "uuid";
 
 import { defaultFontSizeMapper } from "./defaultMappers";
 
@@ -25,9 +26,7 @@ const WordCloud = props => {
     color: PropTypes.string,
     colors: PropTypes.arrayOf(PropTypes.string)
   };
-  const className = `word-cloud-text-chart${Math.floor(
-    Math.random() * 80 + 400
-  )}`;
+  const className = `word-cloud-text-chart${uuidv4()}`;
 
   const defaultProps = {
     width: 700,
