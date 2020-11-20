@@ -20,7 +20,7 @@ import { render } from "react-dom";
 import WordCloud from "@nhuson/react-d3-cloud";
 
 const data = [
-  { text: "Hey", value: 1000, color: "grey", fontWeight: 500 },
+  { text: "Hello", value: 1000, color: "grey", fontWeight: 500 },
   { text: "lol", value: 200, color: "grey", fontWeight: "normal" },
   { text: "first impression", value: 800, color: "#ccc", fontWeight: "bold" },
   { text: "very cool", value: 1000000 },
@@ -35,8 +35,6 @@ render(
   document.getElementById("root")
 );
 ```
-
-Please checkout [demo](https://yoctol.github.com/react-d3-cloud)
 
 for more detailed props, please refer to below:
 
@@ -71,30 +69,3 @@ npm run build
 brew install pkg-config cairo pango libpng jpeg giflib librsvg
 npm install
 ```
-
-#### Ubuntu and other Debian based systems
-
-```sh
-sudo apt-get update
-sudo apt-get install libcairo2-dev libjpeg8-dev libpango1.0-dev libgif-dev build-essential g++
-npm install
-```
-
-For more details, please check out [Installation guides](https://github.com/Automattic/node-canvas/wiki) at node-canvas wiki.
-
-### Run test
-
-```sh
-npm test
-```
-
-## License
-
-MIT © [Yoctol](https://github.com/Yoctol/react-d3-cloud)
-
-[npm-image]: https://img.shields.io/npm/v/react-d3-cloud.svg?style=flat-square
-[npm-url]: https://npmjs.org/package/react-d3-cloud
-[travis-image]: https://travis-ci.org/Yoctol/react-d3-cloud.svg?branch=master
-[travis-url]: https://travis-ci.org/Yoctol/react-d3-cloud
-[david_img]: https://david-dm.org/Yoctol/react-d3-cloud.svg
-[david_site]: https://david-dm.org/Yoctol/react-d3-cloud
