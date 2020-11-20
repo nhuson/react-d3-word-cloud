@@ -1,17 +1,13 @@
 import PropTypes from "prop-types";
 import ReactFauxDom from "react-faux-dom";
 import cloud from "d3-cloud";
-import { Component } from "react";
-import { scaleOrdinal } from "d3-scale";
-import { schemeCategory10 } from "d3-scale-chromatic";
+import React, { useEffect } from "react";
 import { select } from "d3-selection";
 
 import { defaultFontSizeMapper } from "./defaultMappers";
 
-const fill = scaleOrdinal(schemeCategory10);
-
-class WordCloud extends Component {
-  static propTypes = {
+const WordCloud = props => {
+  WordCloud.propTypes = {
     data: PropTypes.arrayOf(
       PropTypes.shape({
         text: PropTypes.string.isRequired,
@@ -31,7 +27,7 @@ class WordCloud extends Component {
     colors: PropTypes.arrayOf(PropTypes.string)
   };
 
-  static defaultProps = {
+  const defaultProps = {
     width: 700,
     height: 600,
     padding: 5,
@@ -40,35 +36,26 @@ class WordCloud extends Component {
     rotate: 0,
     onWordClick: null,
     onWordMouseOver: null,
-    onWordMouseOut: null,
-    color: undefined,
-    colors: []
+    onWordMouseOut: null
   };
+  const wordCloud = ReactFauxDom.createElement("div");
+  const {
+    data,
+    width,
+    height,
+    padding,
+    font,
+    fontSizeMapper,
+    rotate,
+    onWordClick,
+    onWordMouseOver,
+    onWordMouseOut,
+    defaultColor
+  } = props;
+  const fillColor = (d, i) => (d.color ? d.color : defaultColor);
+  const fontWeight = (d, i) => (d.fontWeight ? d.fontWeight : "normal");
 
-  render() {
-    const wordCloud = ReactFauxDom.createElement("div");
-    const {
-      data,
-      width,
-      height,
-      padding,
-      font,
-      fontSizeMapper,
-      rotate,
-      onWordClick,
-      onWordMouseOver,
-      onWordMouseOut,
-      defaultColor
-    } = this.props;
-
-    // clear old words
-    select(wordCloud)
-      .selectAll("*")
-      .remove();
-    const fillColor = (d, i) => (d.color ? d.color : defaultColor);
-    const fontWeight = (d, i) => (d.fontWeight ? d.fontWeight : "normal");
-
-    // render based on new data
+  useEffect(() => {
     const layout = cloud()
       .size([width, height])
       .font(font)
@@ -110,9 +97,10 @@ class WordCloud extends Component {
       });
 
     layout.start();
+  }, []);
 
-    return wordCloud.toReact();
-  }
-}
+  // render based on new data
+  return wordCloud.toReact();
+};
 
 export default WordCloud;
