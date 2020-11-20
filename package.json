@@ -1,8 +1,10 @@
 {
   "name": "@nhuson/react-d3-cloud",
   "description": "a word cloud component using d3-cloud",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "main": "lib/index.js",
+  "author": "Nhu son",
+  "license": "ISC",
   "scripts": {
     "build": "cross-env NODE_ENV=production npm run build:dev",
     "build:dev": "babel src -d lib --ignore __tests__",

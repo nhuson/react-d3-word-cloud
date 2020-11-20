@@ -25,6 +25,9 @@ const WordCloud = props => {
     color: PropTypes.string,
     colors: PropTypes.arrayOf(PropTypes.string)
   };
+  const className = `word-cloud-text-chart${Math.floor(
+    Math.random() * 80 + 400
+  )}`;
 
   const defaultProps = {
     width: 700,
@@ -62,7 +65,7 @@ const WordCloud = props => {
       .rotate(rotate || defaultProps.rotate)
       .fontSize(fontSizeMapper)
       .on("end", words => {
-        const texts = select("div.word-cloud-text-chart")
+        const texts = select(`div.${className}`)
           .append("svg")
           .attr("width", layout.size()[0])
           .attr("height", layout.size()[1])
@@ -98,7 +101,7 @@ const WordCloud = props => {
   }, [data]);
 
   // render based on new data
-  return <div className="word-cloud-text-chart"></div>;
+  return <div className={className}></div>;
 };
 
 export default WordCloud;
