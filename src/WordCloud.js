@@ -45,11 +45,8 @@ class WordCloud extends Component {
     colors: []
   };
 
-  componentWillMount() {
-    this.wordCloud = ReactFauxDom.createElement("div");
-  }
-
   render() {
+    const wordCloud = ReactFauxDom.createElement("div");
     const {
       data,
       width,
@@ -65,7 +62,7 @@ class WordCloud extends Component {
     } = this.props;
 
     // clear old words
-    select(this.wordCloud)
+    select(wordCloud)
       .selectAll("*")
       .remove();
     const fillColor = (d, i) => (d.color ? d.color : defaultColor);
@@ -80,7 +77,7 @@ class WordCloud extends Component {
       .rotate(rotate)
       .fontSize(fontSizeMapper)
       .on("end", words => {
-        const texts = select(this.wordCloud)
+        const texts = select(wordCloud)
           .append("svg")
           .attr("width", layout.size()[0])
           .attr("height", layout.size()[1])
@@ -114,7 +111,7 @@ class WordCloud extends Component {
 
     layout.start();
 
-    return this.wordCloud.toReact();
+    return wordCloud.toReact();
   }
 }
 
