@@ -57,10 +57,10 @@ const WordCloud = props => {
 
   useEffect(() => {
     const layout = cloud()
-      .size([width, height])
-      .font(font)
+      .size([width || defaultProps.width, height || defaultProps.height])
+      .font(font ||defaultProps.font)
       .words(data)
-      .padding(padding)
+      .padding(padding || defaultProps.padding)
       .rotate(rotate)
       .fontSize(fontSizeMapper)
       .on("end", words => {
