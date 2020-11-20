@@ -11,18 +11,18 @@ A word cloud react component built with [d3-cloud](https://github.com/jasondavie
 ## Usage
 
 ```sh
-npm install react-d3-cloud
+npm install @nhuson/react-d3-cloud
 ```
 
 ```jsx
 import React from "react";
 import { render } from "react-dom";
-import WordCloud from "react-d3-cloud";
+import WordCloud from "@nhuson/react-d3-cloud";
 
 const data = [
-  { text: "Hey", value: 1000, color: "grey" },
-  { text: "lol", value: 200, color: "grey" },
-  { text: "first impression", value: 800, color: "#ccc" },
+  { text: "Hey", value: 1000, color: "grey", fontWeight: 500 },
+  { text: "lol", value: 200, color: "grey", fontWeight: "normal" },
+  { text: "first impression", value: 800, color: "#ccc", fontWeight: "bold" },
   { text: "very cool", value: 1000000 },
   { text: "duck", value: 10 }
 ];
