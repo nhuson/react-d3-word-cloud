@@ -1,5 +1,4 @@
 import PropTypes from "prop-types";
-import ReactFauxDom from "react-faux-dom";
 import cloud from "d3-cloud";
 import React, { useEffect } from "react";
 import { select } from "d3-selection";
@@ -38,7 +37,6 @@ const WordCloud = props => {
     onWordMouseOver: null,
     onWordMouseOut: null
   };
-  const wordCloud = ReactFauxDom.createElement("div");
   const {
     data,
     width,
@@ -58,13 +56,13 @@ const WordCloud = props => {
   useEffect(() => {
     const layout = cloud()
       .size([width || defaultProps.width, height || defaultProps.height])
-      .font(font ||defaultProps.font)
+      .font(font || defaultProps.font)
       .words(data)
       .padding(padding || defaultProps.padding)
-      .rotate(rotate)
+      .rotate(rotate || defaultProps.rotate)
       .fontSize(fontSizeMapper)
       .on("end", words => {
-        const texts = select(wordCloud)
+        const texts = select("div.word-cloud-text-chart")
           .append("svg")
           .attr("width", layout.size()[0])
           .attr("height", layout.size()[1])
@@ -97,10 +95,10 @@ const WordCloud = props => {
       });
 
     layout.start();
-  }, []);
+  }, [data]);
 
   // render based on new data
-  return wordCloud.toReact();
+  return <div className="word-cloud-text-chart"></div>;
 };
 
 export default WordCloud;
