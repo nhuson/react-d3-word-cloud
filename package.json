@@ -1,7 +1,7 @@
 {
   "name": "@nhuson/react-d3-cloud",
   "description": "a word cloud component using d3-cloud",
-  "version": "1.0.16",
+  "version": "1.0.17",
   "main": "lib/index.js",
   "author": "Nhu son",
   "license": "ISC",
@@ -61,6 +61,10 @@
   "keywords": [
     "d3",
     "react",
-    "word-cloud"
+    "word-cloud",
+    "react-cloud",
+    "wordcloud",
+    "react wordcloud",
+    "react-word-cloud"
   ]
 }
