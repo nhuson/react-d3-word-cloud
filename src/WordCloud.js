@@ -132,7 +132,7 @@ const WordCloud = forwardRef((props, ref) => {
     });
 
   useImperativeHandle(ref, () => ({
-    toBase64Image() {
+    async toBase64Image() {
       const format = formatImgDownload
         ? formatImgDownload
         : defaultProps.formatImgDownload;
@@ -144,7 +144,8 @@ const WordCloud = forwardRef((props, ref) => {
       const context = canvas.getContext("2d");
       canvas.width = width || defaultProps.width;
       canvas.height = height || defaultProps.height;
-      return loadPngData({ dataImg, context, format, canvas });
+      const data = await loadPngData({ dataImg, context, format, canvas });
+      return data;
     }
   }));
   // render based on new data
