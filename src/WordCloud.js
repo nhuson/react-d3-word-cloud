@@ -61,7 +61,8 @@ const WordCloud = forwardRef((props, ref) => {
     defaultColor,
     formatImgDownload
   } = props;
-  const fillColor = (d, i) => (d.color ? d.color : defaultColor || defaultProps.defaultColor);
+  const fillColor = (d, i) =>
+    d.color ? d.color : defaultColor || defaultProps.defaultColor;
   const fontWeight = (d, i) => (d.fontWeight ? d.fontWeight : "normal");
   const layout = cloud()
     .size([width || defaultProps.width, height || defaultProps.height])
@@ -107,8 +108,8 @@ const WordCloud = forwardRef((props, ref) => {
   }, [data]);
 
   // convert svg to base64 image
-  const loadPngData = async ({ context, dataImg, format, canvas }) => {
-    try {
+  const loadPngData = ({ context, dataImg, format, canvas }) =>
+    new Promise((resolve, reject) => {
       const image = new Image();
       image.onload = () => {
         context.clearRect(
@@ -125,13 +126,11 @@ const WordCloud = forwardRef((props, ref) => {
           height || defaultProps.height
         );
         const pngData = canvas.toDataURL("image/" + format);
-        return Promise.resolve(pngData);
+        return resolve(pngData);
       };
       image.src = dataImg;
-    } catch (error) {
-      return Promise.reject(error);
-    }
-  };
+    });
+
   useImperativeHandle(ref, () => ({
     toBase64Image() {
       const format = formatImgDownload
