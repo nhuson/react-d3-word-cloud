@@ -52,6 +52,38 @@ for more detailed props, please refer to below:
 | onWordClick     | Function called when click event triggered on a word                                                         | Function: `word => {}`                          |          | null                  |
 | onWordMouseOver | Function called when mouseover event triggered on a word                                                     | Function: `word => {}`                          |          | null                  |
 | onWordMouseOut  | Function called when mouseout event triggered on a word                                                      | Function: `word => {}`                          |          | null                  |
+| defaultColor  | Default color text, if not set color in data                                                    | String                   |          | #333                  |
+| formatImgDownload  | Format image base64                                                      | String                        |          | png                  |
+## Convert chart to base64 image
+
+```jsx
+import React, { useRef, useEffect } from "react";
+import { render } from "react-dom";
+import WordCloud from "@nhuson/react-d3-cloud";
+
+const data = [
+  { text: "Hello", value: 1000, color: "grey", fontWeight: 500 },
+  { text: "lol", value: 200, color: "grey", fontWeight: "normal" },
+  { text: "first impression", value: 800, color: "#ccc", fontWeight: "bold" },
+  { text: "very cool", value: 1000000 },
+  { text: "duck", value: 10 }
+];
+const Cloud = (props) => {
+    const cloudRef = useRef();
+    useEffect(() => {
+        cloudRef.current.toBase64Image().then(imgBase64 => console.log(imgBase64))
+    }, [])
+    return (
+         <WordCloud
+          height={300}
+          data={data}
+          padding={10}
+          ref={cloudRef}
+    />
+    )
+}
+
+```
 
 ## Build
 

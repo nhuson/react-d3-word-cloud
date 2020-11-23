@@ -1,12 +1,17 @@
 import PropTypes from "prop-types";
 import cloud from "d3-cloud";
-import React, { useEffect } from "react";
+import React, {
+  useEffect,
+  useImperativeHandle,
+  forwardRef,
+  useRef
+} from "react";
 import { select } from "d3-selection";
 import { v4 as uuidv4 } from "uuid";
 
 import { defaultFontSizeMapper } from "./defaultMappers";
 
-const WordCloud = props => {
+const WordCloud = forwardRef((props, ref) => {
   WordCloud.propTypes = {
     data: PropTypes.arrayOf(
       PropTypes.shape({
@@ -23,9 +28,10 @@ const WordCloud = props => {
     onWordClick: PropTypes.func,
     onWordMouseOut: PropTypes.func,
     onWordMouseOver: PropTypes.func,
-    color: PropTypes.string,
-    colors: PropTypes.arrayOf(PropTypes.string)
+    defaultColor: PropTypes.string,
+    formatImgDownload: PropTypes.string
   };
+  const svgRef = useRef();
   const className = `word-cloud-text-chart${uuidv4()}`;
 
   const defaultProps = {
@@ -37,7 +43,9 @@ const WordCloud = props => {
     rotate: 0,
     onWordClick: null,
     onWordMouseOver: null,
-    onWordMouseOut: null
+    onWordMouseOut: null,
+    formatImgDownload: "png",
+    defaultColor: "#333"
   };
   const {
     data,
@@ -50,57 +58,98 @@ const WordCloud = props => {
     onWordClick,
     onWordMouseOver,
     onWordMouseOut,
-    defaultColor
+    defaultColor,
+    formatImgDownload
   } = props;
-  const fillColor = (d, i) => (d.color ? d.color : defaultColor);
+  const fillColor = (d, i) => (d.color ? d.color : defaultColor || defaultProps.defaultColor);
   const fontWeight = (d, i) => (d.fontWeight ? d.fontWeight : "normal");
+  const layout = cloud()
+    .size([width || defaultProps.width, height || defaultProps.height])
+    .font(font || defaultProps.font)
+    .words(data)
+    .padding(padding || defaultProps.padding)
+    .rotate(rotate || defaultProps.rotate)
+    .fontSize(fontSizeMapper)
+    .on("end", words => {
+      const texts = select(`div.${className}`)
+        .append("svg")
+        .attr("width", layout.size()[0])
+        .attr("height", layout.size()[1])
+        .append("g")
+        .attr(
+          "transform",
+          `translate(${layout.size()[0] / 2},${layout.size()[1] / 2})`
+        )
+        .selectAll("text")
+        .data(words)
+        .enter()
+        .append("text")
+        .style("font-size", d => `${d.size}px`)
+        .style("font-family", font)
+        .style("fill", fillColor)
+        .style("font-weight", fontWeight)
+        .attr("text-anchor", "middle")
+        .attr("transform", d => `translate(${[d.x, d.y]})rotate(${d.rotate})`)
+        .text(d => d.text);
 
+      if (onWordClick) {
+        texts.on("click", onWordClick);
+      }
+      if (onWordMouseOver) {
+        texts.on("mouseover", onWordMouseOver);
+      }
+      if (onWordMouseOut) {
+        texts.on("mouseout", onWordMouseOut);
+      }
+    });
   useEffect(() => {
-    const layout = cloud()
-      .size([width || defaultProps.width, height || defaultProps.height])
-      .font(font || defaultProps.font)
-      .words(data)
-      .padding(padding || defaultProps.padding)
-      .rotate(rotate || defaultProps.rotate)
-      .fontSize(fontSizeMapper)
-      .on("end", words => {
-        const texts = select(`div.${className}`)
-          .append("svg")
-          .attr("width", layout.size()[0])
-          .attr("height", layout.size()[1])
-          .append("g")
-          .attr(
-            "transform",
-            `translate(${layout.size()[0] / 2},${layout.size()[1] / 2})`
-          )
-          .selectAll("text")
-          .data(words)
-          .enter()
-          .append("text")
-          .style("font-size", d => `${d.size}px`)
-          .style("font-family", font)
-          .style("fill", fillColor)
-          .style("font-weight", fontWeight)
-          .attr("text-anchor", "middle")
-          .attr("transform", d => `translate(${[d.x, d.y]})rotate(${d.rotate})`)
-          .text(d => d.text);
-
-        if (onWordClick) {
-          texts.on("click", onWordClick);
-        }
-        if (onWordMouseOver) {
-          texts.on("mouseover", onWordMouseOver);
-        }
-        if (onWordMouseOut) {
-          texts.on("mouseout", onWordMouseOut);
-        }
-      });
-
     layout.start();
   }, [data]);
 
+  // convert svg to base64 image
+  const loadPngData = async ({ context, dataImg, format, canvas }) => {
+    try {
+      const image = new Image();
+      image.onload = () => {
+        context.clearRect(
+          0,
+          0,
+          width || defaultProps.width,
+          height || defaultProps.height
+        );
+        context.drawImage(
+          image,
+          0,
+          0,
+          width || defaultProps.width,
+          height || defaultProps.height
+        );
+        const pngData = canvas.toDataURL("image/" + format);
+        return Promise.resolve(pngData);
+      };
+      image.src = dataImg;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+  useImperativeHandle(ref, () => ({
+    toBase64Image() {
+      const format = formatImgDownload
+        ? formatImgDownload
+        : defaultProps.formatImgDownload;
+      const imgString = new XMLSerializer().serializeToString(
+        svgRef.current.querySelector("svg")
+      );
+      const dataImg = `data:image/svg+xml;base64,${window.btoa(imgString)}`;
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("2d");
+      canvas.width = width || defaultProps.width;
+      canvas.height = height || defaultProps.height;
+      return loadPngData({ dataImg, context, format, canvas });
+    }
+  }));
   // render based on new data
-  return <div className={className}></div>;
-};
+  return <div className={className} ref={svgRef}></div>;
+});
 
 export default WordCloud;
